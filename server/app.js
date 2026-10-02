@@ -8,49 +8,42 @@ import { fileURLToPath } from 'url';
 import { corsOptions } from './config/corsOptions.js';
 import { globalRateLimiter } from './middleware/rateLimiter.js';
 import { errorHandler } from './middleware/errorHandler.js';
-import { ApiResponse } from './utils/apiResponse.js';
+
+// Route Imports
+import authRoutes from './routes/authRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import conversationRoutes from './routes/conversationRoutes.js';
+import messageRoutes from './routes/messageRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js';
+import requestRoutes from './routes/requestRoutes.js';
+import reportRoutes from './routes/reportRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// Enable Helmet for Security Headers
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
-
-// Enable CORS
 app.use(cors(corsOptions));
-
-// Body Parsing & Cookie Parser
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
-
-// NoSQL Injection Sanitization
 app.use(mongoSanitize());
 
-// Apply Global Rate Limiting
 app.use('/api', globalRateLimiter);
-
-// Serve File Uploads Statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Application Health & Diagnostics Route
-app.get('/api/health', (req, res) => {
-  return ApiResponse.success(res, 200, 'NexusChat Server Engine Operational', {
-    status: 'ONLINE',
-    uptime: process.uptime(),
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
-  });
-});
+// Mount API Endpoints
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/conversations', conversationRoutes);
+app.use('/api/messages', messageRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/requests', requestRoutes);
+app.use('/api/reports', reportRoutes);
+app.use('/api/admin', adminRoutes);
 
-// Handle 404 Routes
-app.use('*', (req, res) => {
-  return ApiResponse.error(res, 404, `Cannot find route '${req.originalUrl}' on this server.`);
-});
-
-// Centralized Error Handling Middleware
 app.use(errorHandler);
 
 export default app;
