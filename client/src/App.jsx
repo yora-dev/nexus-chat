@@ -1,24 +1,41 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useAuthStore } from './store/useAuthStore';
+import { useSocketStore } from './store/useSocketStore';
+import { Login } from './pages/auth/Login';
+import { Register } from './pages/auth/Register';
+import { Sidebar } from './components/chat/Sidebar';
+import { ChatArea } from './components/chat/ChatArea';
+
+const ProtectedLayout = () => {
+  const { isAuthenticated, token } = useAuthStore();
+  const { connectSocket, disconnectSocket } = useSocketStore();
+
+  useEffect(() => {
+    if (isAuthenticated && token) {
+      connectSocket(token);
+    }
+    return () => disconnectSocket();
+  }, [isAuthenticated, token, connectSocket, disconnectSocket]);
+
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+
+  return (
+    <div className="flex h-screen w-screen overflow-hidden bg-slate-950 text-slate-100">
+      <Sidebar onOpenGroupModal={() => {}} />
+      <ChatArea />
+    </div>
+  );
+};
 
 export default function App() {
   return (
     <BrowserRouter>
-      <div className="flex h-screen w-screen items-center justify-center bg-slate-950 text-slate-100">
-        <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-8 shadow-2xl backdrop-blur-md text-center max-w-md">
-          <div className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-indigo-600 font-bold text-white mb-4 text-xl shadow-lg shadow-indigo-500/30">
-            N
-          </div>
-          <h1 className="text-2xl font-bold tracking-tight text-white mb-2">NexusChat Platform</h1>
-          <p className="text-sm text-slate-400 mb-6">
-            Real-Time Messaging Engine Core Initialized & Ready.
-          </p>
-          <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400 border border-emerald-500/20">
-            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-            Backend & Frontend Synced
-          </div>
-        </div>
-      </div>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/*" element={<ProtectedLayout />} />
+      </Routes>
     </BrowserRouter>
   );
 }

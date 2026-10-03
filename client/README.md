@@ -1,16 +1,16 @@
-# React + Vite
+# NexusChat — Real-Time MERN Messaging Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+NexusChat is an enterprise-grade real-time messaging application engineered with MongoDB, Express, React, Node.js, and Socket.IO.
 
-Currently, two official plugins are available:
+## Key Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Real-Time Engine**: Instant message delivery powered by Socket.IO with typing indicators and online presence tracking.
+- **Security First**: Helmet protection, express-rate-limit brute force defense, MongoSanitize injection guards, and bcrypt hashing.
+- **Media & File Sharing**: Multi-mime file upload support backed by Multer validation.
+- **Admin & Moderation Dashboard**: Metrics monitoring, user bans, and audit log generation.
 
-## React Compiler
+## Setup Instructions
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 1. Installation
+```bash
+npm run install:all
