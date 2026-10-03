@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema(
     username: {
       type: String,
       required: [true, 'Username is required'],
-      unique: true,
+      unique: true, // Creates unique index on username
       trim: true,
       lowercase: true,
       minlength: [3, 'Username must be at least 3 characters'],
@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema(
     email: {
       type: String,
       required: [true, 'Email is required'],
-      unique: true,
+      unique: true, // Creates unique index on email
       trim: true,
       lowercase: true,
       match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please provide a valid email address']
@@ -81,9 +81,7 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// Database Indexes for Fast Discovery
-userSchema.index({ username: 1 });
-userSchema.index({ email: 1 });
+// Database Index for Fast Text Search
 userSchema.index({ name: 'text', username: 'text' });
 
 // Hash Password Before Save
