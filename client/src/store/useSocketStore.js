@@ -8,7 +8,11 @@ export const useSocketStore = create((set, get) => ({
   connectSocket: (token) => {
     if (get().socket) return;
 
-    const socket = io('/', {
+    const socketUrl =
+      import.meta.env.VITE_SOCKET_URL ||
+      (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api').replace(/\/api$/, '');
+
+    const socket = io(socketUrl, {
       auth: { token }
     });
 
@@ -18,8 +22,15 @@ export const useSocketStore = create((set, get) => ({
 
     socket.on('message:new', (message) => {
       const activeConv = useChatStore.getState().activeConversation;
-      if (activeConv && activeConv._id === message.conversation) {
-        useChatStore.getState().addMessage(message);
+      if (activeConv && String(activeConv._id) === String(message.conversation)) {
+        const { messages, addMessage } = useChatStore.getState();
+        const alreadyPresent = messages.some((existingMessage) => {
+          return String(existingMessage._id) === String(message._id);
+        });
+
+        if (!alreadyPresent) {
+          addMessage(message);
+        }
       }
       useChatStore.getState().fetchConversations();
     });
