@@ -2,11 +2,11 @@ import rateLimit from 'express-rate-limit';
 import { ApiResponse } from '../utils/apiResponse.js';
 
 export const globalRateLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 300, // Limit each IP to 300 requests per windowMs
+  windowMs: 15 * 60 * 1000,
+  max: 300,
   standardHeaders: true,
   legacyHeaders: false,
-  handler: (req, res) => {
+  handler: (req, res, next) => {
     return ApiResponse.error(
       res,
       429,
@@ -16,11 +16,11 @@ export const globalRateLimiter = rateLimit({
 });
 
 export const authRateLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 15, // Limit authentication attempts (login/register) to 15 requests per 15 minutes
+  windowMs: 15 * 60 * 1000,
+  max: 15,
   standardHeaders: true,
   legacyHeaders: false,
-  handler: (req, res) => {
+  handler: (req, res, next) => {
     return ApiResponse.error(
       res,
       429,

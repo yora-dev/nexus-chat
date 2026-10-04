@@ -10,5 +10,5 @@ export const validate = (req, res, next) => {
     }));
     return ApiResponse.error(res, 400, 'Validation failed', formattedErrors);
   }
-  next();
+  return next(); // Always return next() explicitly when validation passes
 };
