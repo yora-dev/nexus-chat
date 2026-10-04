@@ -47,12 +47,23 @@ export const getOrCreateDirectConversation = asyncHandler(async (req, res) => {
 
 export const createGroupConversation = asyncHandler(async (req, res) => {
   const { name, participantIds } = req.body;
+  let parsedParticipantIds = [];
 
-  if (!name || !participantIds || !Array.isArray(participantIds) || participantIds.length === 0) {
+  if (Array.isArray(participantIds)) {
+    parsedParticipantIds = participantIds;
+  } else if (typeof participantIds === 'string' && participantIds.trim()) {
+    try {
+      parsedParticipantIds = JSON.parse(participantIds);
+    } catch (error) {
+      return ApiResponse.error(res, 400, 'Invalid participant list format');
+    }
+  }
+
+  if (!name || parsedParticipantIds.length === 0) {
     return ApiResponse.error(res, 400, 'Group name and at least one member are required');
   }
 
-  const allParticipants = Array.from(new Set([...participantIds, req.user._id.toString()]));
+  const allParticipants = Array.from(new Set([...parsedParticipantIds, req.user._id.toString()]));
 
   const groupImage = req.file ? `/uploads/${req.file.filename}` : '';
 
