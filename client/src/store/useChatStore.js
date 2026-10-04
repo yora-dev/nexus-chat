@@ -37,5 +37,22 @@ export const useChatStore = create((set, get) => ({
 
   addMessage: (message) => {
     set((state) => ({ messages: [...state.messages, message] }));
+  },
+
+  addConversation: (conversation) => {
+    set((state) => {
+      const existingIndex = state.conversations.findIndex(
+        (item) => String(item._id) === String(conversation._id),
+      );
+
+      if (existingIndex === -1) {
+        return { conversations: [conversation, ...state.conversations] };
+      }
+
+      const updatedConversations = [...state.conversations];
+      updatedConversations[existingIndex] = conversation;
+
+      return { conversations: updatedConversations };
+    });
   }
 }));

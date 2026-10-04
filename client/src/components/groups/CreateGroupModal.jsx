@@ -4,7 +4,8 @@ import API from "../../utils/axios";
 import { useChatStore } from "../../store/useChatStore";
 
 export const CreateGroupModal = ({ isOpen, onClose }) => {
-  const { setActiveConversation, fetchConversations } = useChatStore();
+  const { setActiveConversation, fetchConversations, addConversation } =
+    useChatStore();
   const [groupName, setGroupName] = useState("");
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
@@ -116,8 +117,9 @@ export const CreateGroupModal = ({ isOpen, onClose }) => {
 
       const conversation = res.data?.data?.conversation;
       if (conversation) {
-        await fetchConversations();
+        addConversation(conversation);
         setActiveConversation(conversation);
+        fetchConversations();
       }
 
       onClose();
