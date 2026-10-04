@@ -9,7 +9,7 @@ export const registerValidator = [
     .isLength({ min: 3, max: 30 })
     .matches(/^[a-zA-Z0-9_.]+$/)
     .withMessage('Username can only contain alphanumeric characters, underscores, and dots'),
-  body('email').trim().isEmail().withMessage('Valid email address is required').normalizeEmail(),
+  body('email').trim().isEmail().withMessage('Valid email address is required'), // Removed .normalizeEmail()
   body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
 ];
 
