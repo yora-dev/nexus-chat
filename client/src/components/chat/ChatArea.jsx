@@ -1,14 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useChatStore } from '../../store/useChatStore';
 import { useAuthStore } from '../../store/useAuthStore';
+import { useSocketStore } from '../../store/useSocketStore';
 import { Send, Paperclip, MessageSquare } from 'lucide-react';
 import API from '../../utils/axios';
 
 export const ChatArea = () => {
   const { activeConversation, messages } = useChatStore();
   const { user } = useAuthStore();
+  const socket = useSocketStore((state) => state.socket);
   const [content, setContent] = useState('');
   const [file, setFile] = useState(null);
+
+  useEffect(() => {
+    if (!socket || !activeConversation?._id) return;
+
+    const conversationId = activeConversation._id;
+    socket.emit('join:conversation', conversationId);
+
+    return () => {
+      socket.emit('leave:conversation', conversationId);
+    };
+  }, [socket, activeConversation?._id]);
 
   if (!activeConversation) {
     return (
