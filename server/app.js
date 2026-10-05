@@ -23,6 +23,13 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+app.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'NexusChat API is running'
+  });
+});
+
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
