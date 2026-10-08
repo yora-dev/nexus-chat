@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import API from '../utils/axios';
+import { upsertMessage } from './messageUtils.js';
 
 export const useChatStore = create((set, get) => ({
   conversations: [],
@@ -36,7 +37,11 @@ export const useChatStore = create((set, get) => ({
   },
 
   addMessage: (message) => {
-    set((state) => ({ messages: [...state.messages, message] }));
+    set((state) => ({ messages: upsertMessage(state.messages, message) }));
+  },
+
+  upsertMessage: (message) => {
+    set((state) => ({ messages: upsertMessage(state.messages, message) }));
   },
 
   addConversation: (conversation) => {

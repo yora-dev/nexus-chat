@@ -6,13 +6,22 @@ export const useSocketStore = create((set, get) => ({
   socket: null,
 
   connectSocket: (token) => {
-    if (get().socket) return;
+    if (!token) return;
+
+    const existingSocket = get().socket;
+    if (existingSocket && existingSocket.connected) return;
 
     const socketUrl =
-      (import.meta.env.VITE_API_BASE_URL || import.meta.env.SERVER_URL || 'https://nexus-chat-ten-pi.vercel.app/api').replace(/\/api$/, '');
+      import.meta.env.VITE_SOCKET_URL ||
+      import.meta.env.VITE_API_BASE_URL?.replace(/\/api$/, '') ||
+      'http://localhost:5000';
 
     const socket = io(socketUrl, {
-      auth: { token }
+      auth: { token },
+      transports: ['websocket', 'polling'],
+      reconnection: true,
+      reconnectionAttempts: 10,
+      reconnectionDelay: 500
     });
 
     socket.on('connect', () => {
@@ -22,14 +31,7 @@ export const useSocketStore = create((set, get) => ({
     socket.on('message:new', (message) => {
       const activeConv = useChatStore.getState().activeConversation;
       if (activeConv && String(activeConv._id) === String(message.conversation)) {
-        const { messages, addMessage } = useChatStore.getState();
-        const alreadyPresent = messages.some((existingMessage) => {
-          return String(existingMessage._id) === String(message._id);
-        });
-
-        if (!alreadyPresent) {
-          addMessage(message);
-        }
+        useChatStore.getState().upsertMessage(message);
       }
       useChatStore.getState().fetchConversations();
     });

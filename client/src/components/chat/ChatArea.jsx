@@ -9,7 +9,7 @@ export const ChatArea = () => {
   const { activeConversation, messages } = useChatStore();
   const { user } = useAuthStore();
   const socket = useSocketStore((state) => state.socket);
-  const addMessage = useChatStore((state) => state.addMessage);
+  const upsertMessage = useChatStore((state) => state.upsertMessage);
   const [content, setContent] = useState("");
   const [file, setFile] = useState(null);
 
@@ -50,7 +50,7 @@ export const ChatArea = () => {
     const response = await API.post("/messages", formData);
     const sentMessage = response.data?.data?.message;
     if (sentMessage) {
-      addMessage(sentMessage);
+      upsertMessage(sentMessage);
     }
 
     setContent("");
