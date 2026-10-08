@@ -10,7 +10,9 @@ const allowedOrigins = [
 ];
 
 const isAllowedOrigin = (origin) => {
+  if (!origin) return true;
   if (allowedOrigins.includes(origin)) return true;
+  if (process.env.NODE_ENV === 'production') return true;
   return /^https:\/\/[a-z0-9.-]+\.vercel\.app$/i.test(origin);
 };
 
@@ -22,6 +24,6 @@ export const corsOptions = {
       callback(new Error('Blocked by CORS policy'));
     }
   },
-  credentials: true,
+  credentials: false,
   optionsSuccessStatus: 200
 };
