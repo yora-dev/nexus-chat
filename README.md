@@ -2,6 +2,10 @@
 
 NexusChat is a real-time chat platform built with the MERN stack and Socket.IO. It supports private and group conversations, live message delivery, file uploads, authentication, user search, chat requests, notifications, reporting, and an admin dashboard.
 
+## Live Frontend
+
+- Production app: https://nexus-chat-web-eight.vercel.app/
+
 ## Features
 
 - Real-time messaging with Socket.IO
