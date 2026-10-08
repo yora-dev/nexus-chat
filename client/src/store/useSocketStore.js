@@ -9,7 +9,7 @@ export const useSocketStore = create((set, get) => ({
     if (get().socket) return;
 
     const socketUrl =
-      (import.meta.env.VITE_API_BASE_URL || import.meta.env.SERVER_URL || 'http://localhost:5000/api').replace(/\/api$/, '');
+      (import.meta.env.VITE_API_BASE_URL || import.meta.env.SERVER_URL || 'https://nexus-chat-ten-pi.vercel.app/api').replace(/\/api$/, '');
 
     const socket = io(socketUrl, {
       auth: { token }
